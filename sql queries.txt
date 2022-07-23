@@ -1,0 +1,54 @@
+1. Total Sales, Total Quantity, Total Discount/Surcharge, COUNTRY, STATE, STATUS
+
+SELECT csc.COUNTRY, csc.STATE, sales.STATUS, SUM(sales.SALES) as 'Total Sales', SUM(sales.ORDER_QTY) as 'Total Quantity', SUM(CASE WHEN sales.UNIT_PRICE <= sales.MSRP THEN
+(sales.ORDER_QTY * (sales.MSRP-sales.UNIT_PRICE)) ELSE 0 END) AS 'Discount',
+SUM(CASE WHEN sales.UNIT_PRICE > sales.MSRP THEN (sales.ORDER_QTY *
+(sales.UNIT_PRICE-sales.MSRP)) ELSE 0 END) AS 'Surcharge' FROM sales
+JOIN csc ON csc.ID = sales.CSC_ID
+GROUP BY csc.COUNTRY, csc.STATE, sales.STATUS ORDER BY csc.COUNTRY;
+
+
+2. Highest Selling Product Line in a Country, Total Quantity Sold, Total Sales, Total Discount/Surcharge of this Product Line
+
+SELECT csc.COUNTRY, sales.PRODUCT_LINE, SUM(sales.SALES) as 'Total Sales', SUM(sales.ORDER_QTY) as 'Total Quantity', SUM(CASE WHEN sales.UNIT_PRICE <= sales.MSRP THEN
+(sales.ORDER_QTY * (sales.MSRP-sales.UNIT_PRICE)) ELSE 0 END) AS 'Discount',
+SUM(CASE WHEN sales.UNIT_PRICE > sales.MSRP THEN (sales.ORDER_QTY *
+(sales.UNIT_PRICE-sales.MSRP)) ELSE 0 END) AS 'Surcharge' FROM sales
+JOIN csc ON csc.ID = sales.CSC_ID
+GROUP BY csc.COUNTRY, sales.PRODUCT_LINE ORDER BY csc.COUNTRY;
+
+
+3. Most Successful Month for each year and country, Total Sales
+
+SELECT csc.COUNTRY, sales.MONTH_ID, sales.YEAR_ID, SUM(sales.SALES) as 'Total Sales' FROM sales 
+JOIN csc ON csc.ID = sales.CSC_ID 
+GROUP BY csc.COUNTRY, sales.YEAR_ID, sales.MONTH_ID;
+
+
+4. Most Successful Quarter for each year and country, Total Sales
+
+SELECT csc.COUNTRY, sales.QUATER_ID, sales.YEAR_ID, SUM(sales.SALES) as 'Total Sales' FROM sales 
+JOIN csc ON csc.ID = sales.CSC_ID 
+GROUP BY csc.COUNTRY, sales.YEAR_ID, sales.QUATER_ID;
+
+
+5. Total Sales, Total Quantity, Total Discount/Surcharge, DEAL_SIZE
+
+SELECT DEAL_SIZE, SUM(CASE WHEN UNIT_PRICE<=MSRP THEN
+(ORDER_QTY * (MSRP-UNIT_PRICE)) ELSE 0 END) AS 'Discount',
+SUM(CASE WHEN UNIT_PRICE>MSRP THEN (ORDER_QTY *
+(UNIT_PRICE-MSRP)) ELSE 0 END) AS 'Surcharge' FROM sales 
+GROUP BY DEAL_SIZE; 
+
+
+6. Monthly Total Sales for each Country and Territory
+
+SELECT csc.COUNTRY, sales.TERRITORY, SUM(sales.SALES) as 'Total Sales', sales.MONTH_ID from sales
+JOIN csc ON csc.ID = sales.CSC_ID
+GROUP BY csc.COUNTRY, sales.MONTH_ID ORDER BY csc.COUNTRY;
+
+
+7. Cumulative Total Sales per Month
+
+SELECT SUM(SALES) AS 'Total Sales', MONTH_ID AS 'Month' FROM sales
+GROUP BY MONTH_ID ORDER BY MONTH_ID; 
