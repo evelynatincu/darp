@@ -10,7 +10,11 @@ def data_quality_check(column_name):
     # check if column values is null or NaN
     if pd.isnull(df[column_name]).any():
         df[column_name].fillna(x, inplace=True)
-        logging.warning('Value is Null')
+        logging.warning(column_name + ' Value is Null, filled by ' + x)
+
+
+def count_null_rows(d_frame, column_name):
+    return d_frame[column_name].isna().sum()
 
 
 months_list = []
@@ -86,6 +90,10 @@ def total_sales(d_frame, c_name, gby, s, ok):
 
 if __name__ == "__main__":
     df = pd.read_csv('sales.csv')
+
+    print('Number of null rows for POSTAL_CODE column: ', count_null_rows(df, 'POSTAL_CODE'))
+    print('Number of null rows for STATE column: ', count_null_rows(df, 'STATE'))
+    print('Number of null rows for TERRITORY column: ', count_null_rows(df, 'TERRITORY'))
 
     # fill invalid data with defaults
     data_quality_check('POSTAL_CODE')
